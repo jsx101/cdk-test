@@ -4,7 +4,7 @@ import * as cdk from '@aws-cdk/core';
 import { FargateStack } from '../lib/fargate';
 
 const app = new cdk.App();
-new FargateStack(app, 'CdkTestStack', {
+new FargateStack(app, 'MyFargateStack', {
   env: {
     account: process.env.AWS_ACCOUNT_NUMBER,
     region: process.env.AWS_REGION

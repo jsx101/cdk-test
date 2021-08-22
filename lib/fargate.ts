@@ -8,26 +8,25 @@ export class FargateStack extends cdk.Stack {
         super(scope, id, props);
 
         // VPC
-        const vpc = new Vpc(this, "helloVpc", {
+        const vpc = new Vpc(this, "helloVpcId", {
             maxAzs: 2,
             natGateways: 1
         });
 
-        const cluster = new ecs.Cluster(this, "helloCluster", {
+        const cluster = new ecs.Cluster(this, "helloClusterId", {
+            clusterName: "clusterDefaultName",
             vpc: vpc as any,
         });
 
         // Fargate service
-        const helloService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "helloDarknessMyOldFriend", {
+        const helloService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "helloServiceId", {
             cluster: cluster,
+            serviceName: "serviceDefaultName",
             memoryLimitMiB: 1024,
             cpu: 512,
             desiredCount: 2,
             taskImageOptions: {
-                image: ecs.ContainerImage.fromAsset("./haro/"),
-                environment: {
-                    myVar: "variable01",
-                }
+                image: ecs.ContainerImage.fromAsset("haro"),
             }
         });
 
@@ -35,7 +34,7 @@ export class FargateStack extends cdk.Stack {
         helloService.targetGroup.configureHealthCheck({path: "/hello"});
 
         // Load balancer url
-        new cdk.CfnOutput(this, "loadBalancedUrl", {
+        new cdk.CfnOutput(this, "loadBalancedUrlId", {
             value: helloService.loadBalancer.loadBalancerDnsName,
             exportName: "loadBalancerUrl",
         });
